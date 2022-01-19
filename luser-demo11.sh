@@ -25,7 +25,7 @@ log() {
 	fi
 }
 
-while getopts vl:s OPTION
+while getopts vl:sx OPTION
 do
 	case ${OPTION} in
 		v)
@@ -38,11 +38,26 @@ do
 		s)
 			USE_SPECIAL_CHARACTER='true'
 			;;
+		x)
+			echo "$(date)"
+			;;
 		?)
 			usage
 			;;
 	esac
 done
+
+
+# Remove the options while leaving the remaining arguments.
+shift "$(( OPTIND - 1 ))"
+
+
+if [[ "${#}" -gt 0 ]]
+then
+	usage
+fi
+
+
 
 log 'Generating a password.'
 
