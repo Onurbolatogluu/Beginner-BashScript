@@ -8,7 +8,7 @@ ARCHIVE_DIR='/archive'
 
 usage() {
 	# Display the usage and exit.
-	echo "Usage: ${0} [-dra] USER [USERN]..." >&2
+	echo "Usage: ${0} [-afdr] USER [USERN]..." >&2
 	echo 'Disable a local linux account.' >&2
 	echo ' -d Delete account instead of disabling them.' >&2
 	echo ' -r Removes the home directory associated with the account(s).' >&2
@@ -102,6 +102,20 @@ do
 	fi
 
 
+        if [[ "${DISABLE_USER}" = 'true' ]]
+        then
+                chage -E 0 ${USERNAME}
+                # Check to see if the chage  command succeeded.
+                # We don't want to tell the user that an account wsa disabled when it hasn't been.
+                if [[ "${?}" -ne 0 ]]
+                then
+                        echo "The account ${USERNAME} was NOT disabled." >&2
+                        exit 1
+                fi
+                echo "The account ${USERNAME} was disabled."
+        fi
+
+
 	if [[ "${DELETE_USER}" = 'true' ]]
 	then
 		# Delete the user.
@@ -116,19 +130,6 @@ do
 		echo "The account ${USERNAME} was deleted."
 	fi
 
-
-	if [[ "${DISABLE_USER}" = 'true' ]]
-	then
-		chage -E 0 ${USERNAME}
-		# Check to see if the chage  command succeeded.               
-		# We don't want to tell the user that an account wsa disabled when it hasn't been.
-		if [[ "${?}" -ne 0 ]]
-		then
-			echo "The account ${USERNAME} was NOT disabled." >&2
-			exit 1
-		fi
-		echo "The account ${USERNAME} was disabled."
-	fi
 done
 
 exit 0
