@@ -88,6 +88,7 @@ do
 		then
 			echo "Archiving ${HOME_DIR} to ${ARCHIVE_FILE}"
 			tar -zcf ${ARCHIVE_FILE} ${HOME_DIR} &> /dev/null
+			exit 0
 			if [[ "${?}" -ne 0 ]]
 			then
 				echo "Could not create ${ARCHIVE_FILE}." >&2		
@@ -104,7 +105,6 @@ do
 	then
 		# Delete the user.
 		userdel ${REMOVE_OPTION} ${USERNAME}
-
 		# Check to see if the userdel command succeeded.
 		# We don't want to tell the user that an account was deleted when it hasn't been.
 		if [[ "${?}" -ne 0 ]]
