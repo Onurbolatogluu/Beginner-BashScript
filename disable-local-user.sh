@@ -13,6 +13,7 @@ usage() {
 	echo ' -d Delete account instead of disabling them.' >&2
 	echo ' -r Removes the home directory associated with the account(s).' >&2
 	echo ' -a Creates an archive of the home directory associated with the account(s).' >&2
+	echo ' -f Deactivate the user.' >&2
 	exit 1
 }
 
@@ -113,18 +114,20 @@ do
 			exit 1
 		fi
 		echo "The account ${USERNAME} was deleted."
-	elif [[ "${DISABLE_USER}" = 'true' ]]
+	fi
+
+
+	if [[ "${DISABLE_USER}" = 'true' ]]
 	then
 		chage -E 0 ${USERNAME}
-		# Check to see if the chage  command succeeded.               # We don't want to tell the user that an account wsa disabled when it hasn't been.
+		# Check to see if the chage  command succeeded.               
+		# We don't want to tell the user that an account wsa disabled when it hasn't been.
 		if [[ "${?}" -ne 0 ]]
 		then
 			echo "The account ${USERNAME} was NOT disabled." >&2
 			exit 1
 		fi
 		echo "The account ${USERNAME} was disabled."
-	else
-		exit 0
 	fi
 done
 
