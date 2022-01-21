@@ -28,12 +28,13 @@ fi
 
 
 # Parse the options.
-while getopts dra OPTION
+while getopts draf OPTION
 do
 	case ${OPTION} in
 		d) DELETE_USER='true' ;;
 		r) REMOVE_OPTION='-r' ;;
 		a) ARCHIVE='true' ;;
+		f) DISABLE_USER='true' ;;
 		?) usage ;;
 	esac
 done
@@ -88,7 +89,6 @@ do
 		then
 			echo "Archiving ${HOME_DIR} to ${ARCHIVE_FILE}"
 			tar -zcf ${ARCHIVE_FILE} ${HOME_DIR} &> /dev/null
-			exit 0
 			if [[ "${?}" -ne 0 ]]
 			then
 				echo "Could not create ${ARCHIVE_FILE}." >&2		
@@ -97,7 +97,7 @@ do
 		else
 			echo "${HOME_DIR} does not exist or is not a directory." >&2
 			exit 1
-		fi	
+		fi
 	fi
 
 
@@ -111,17 +111,20 @@ do
 		then
 			echo "The account ${USERNAME} was NOT deleted." >&2
 			exit 1
-		fi 
+		fi
 		echo "The account ${USERNAME} was deleted."
-	else
+	elif [[ "${DISABLE_USER}" = 'true' ]]
+	then
 		chage -E 0 ${USERNAME}
 		# Check to see if the chage  command succeeded.               # We don't want to tell the user that an account wsa disabled when it hasn't been.
 		if [[ "${?}" -ne 0 ]]
 		then
 			echo "The account ${USERNAME} was NOT disabled." >&2
 			exit 1
-                fi
+		fi
 		echo "The account ${USERNAME} was disabled."
+	else
+		exit 0
 	fi
 done
 
