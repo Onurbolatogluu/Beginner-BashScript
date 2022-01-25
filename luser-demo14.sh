@@ -2,6 +2,14 @@
 
 # Display the top three most visited URLs for a given web server log file.
 
+
+# Example Usage
+#
+# ./luser-demo14.sh /var/log/nginx/access.log
+#
+
+
+
 LOG_FILE="${1}"
 
 if [[ ! -e "${LOG_FILE}" ]]
